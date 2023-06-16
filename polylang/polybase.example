@@ -1,0 +1,100 @@
+@public
+collection User {
+  // `id` is unique and required on all collections
+  id: string;
+  publicKey: PublicKey;
+  name: string; 
+  status?: string;
+
+  // `constructor` is called when a new record is
+  // created, make sure to assign a value to `this.id`
+  constructor (id: string, name: string, status?: string) {
+    // `this.id` must be assigned in the constructor
+    // `this.id` must be unique in collection
+    this.id = id;
+    this.name = name;
+    this.publicKey = ctx.publicKey;
+    this.status = status;
+  }
+
+  del () {
+    if (this.publicKey != ctx.publicKey) {
+      throw error();
+    }
+    selfdestruct();
+  }
+
+  function setName (name: string) {
+    if (ctx.publicKey != this.publicKey) {
+      error('You are not the creator of this record.');
+    }
+    this.name = name;
+  }
+  
+  function setStatus (name: string) {
+    if (ctx.publicKey != this.publicKey) {
+      error('You are not the creator of this record.');
+    }
+    this.name = name;
+  }
+}
+
+
+@public 
+collection Post {
+  id: string;
+  price: number;
+  cid: string;
+  content: string;
+  timestamp: number;
+  publicKey: PublicKey;
+
+  @index(publicKey, [timestamp, desc]);
+  
+  constructor (id: string, cid: string, content: string, timestamp: number) {
+    this.id = id;
+    this.content = content;
+    this.publicKey = ctx.publicKey;
+  }
+
+  del () {
+    if (this.publicKey != ctx.publicKey.toHex()) {
+      throw error();
+    }
+    selfdestruct();
+  }
+
+  updateContent(content: string, timestamp: number) {
+    if (this.publicKey != ctx.publicKey) {
+      throw error();
+    }
+    this.content = content;
+    this.timestamp = timestamp;
+  }
+
+  updatePrice(price: number) {
+    if (this.publicKey != ctx.publicKey) {
+      throw error();
+    }
+    this.price = price;
+  } 
+}
+
+@public
+collection Transaction {
+  id: string;
+  publicKey: PublicKey;
+  status: string;
+
+  constructor (id: string) {
+    this.id = id;
+    this.publicKey = ctx.publicKey;
+  }
+
+  del () {
+    if (this.publicKey != ctx.publicKey) {
+      throw error();
+    }
+    selfdestruct();
+  }
+}
