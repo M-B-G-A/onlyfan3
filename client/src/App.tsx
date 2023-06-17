@@ -5,28 +5,7 @@ import { Auth, AuthState } from "@polybase/auth";
 import * as eth from "@polybase/eth";
 import { atom, useAtom } from "jotai";
 import { ulid } from 'ulid';
-
-// const walletAtom = atom<AuthState | null>(null);
-
-const Header = () => {
-  // const [ wallet, setWallet ] = useAtom(walletAtom);
-  const { auth, state, loading } = useAuth();
-
-  // `state` is null if not logged in, or logged in state e.g. { type: "metamask", userId: "..." }
-  // React.useEffect(() => {
-  //   console.log(state);
-  //   setWallet(state);
-  // }, [state]);
-  // `auth` is the prop passed to AuthProvider as auth 
-
-  return (
-    <div>
-      <button onClick={() => auth.signIn()}>Sign In</button>
-      <button onClick={() => auth.signOut()}>Sign Out</button>
-      { state ? <div>{state.publicKey}</div> : null}
-    </div>
-  )
-}
+import { Header } from "./Header"
 
 const Content = () => {
   const { state } = useAuth();
