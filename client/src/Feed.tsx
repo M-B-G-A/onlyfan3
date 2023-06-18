@@ -85,7 +85,7 @@ export const Feed = () => {
 
     React.useEffect(() => {
     //    console.log('hi', state);
-        if (subscribedIds == null || subscribedIds.length === 0) {
+        if (subscribedIds == null || (subscribedIds as any[]).length === 0) {
             subscribe();
         } else {
             getFeeds();
