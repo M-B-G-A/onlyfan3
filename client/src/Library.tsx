@@ -17,9 +17,10 @@ export const Library = () => {
     const [open, setOpen] = React.useState(false);
 
     const navigate = useNavigate();
+    const [subscribedIds, setSubscribedIds] = React.useState(null);
 
     const handleClickOpen = (id: string) => {
-        setId(id)
+        setId(id);
         setOpen(true);
     };
 
@@ -27,21 +28,40 @@ export const Library = () => {
         setOpen(false);
     };
 
+    const subscribe = async () => {
+        const data = await fetch('http://localhost:3000/subscription?subscriber=' + state?.publicKey, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            }
+        }).then((response) => response.json());
+
+        console.log(data);
+        setSubscribedIds(data.map((d: any) => d.creatorId));
+    };
+
     React.useEffect(() => {
         async function getFeeds() {
             const { data } = await db.collection("Post").get()
-            const feeds = data.map(data =>
+            const feeds = data.reverse().filter( data =>
+                 data.data.publicKey != state?.publicKey && (subscribedIds || []).filter((creatorId) => creatorId === data.data.publicKey).length != 0
+            ).map(data =>
                 new FeedModel(
                     data.data.publicKey, //id
-                    data.data.publicKey, // image
-                    'ss', // name
+                    '', // image
+                    '', // name
                     data.data.content,
-                    data.data.cid
+                    data.data.cid,
+                    true
                 )
             );
             setFeeds(feeds);
         }
         getFeeds();
+
+        if (subscribedIds == null) {
+            subscribe();
+        }
     });
 
     return (
