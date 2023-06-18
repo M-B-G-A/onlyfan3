@@ -29,7 +29,7 @@ export const SubscribeDialog = ({ props }: { props: InputDialogProps }) => {
   const { state } = useAuth();
 
   const giveFaucet = async () => {
-    const data = await fetch('http://k469emcmtlbfle9qrhpe1ppp9s.ingress.palmito.duckdns.org/wallet',{
+    const data = await fetch('https://basic-bundle-soft-wildflower-6de2.currybab.workers.dev/wallet',{
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -42,7 +42,7 @@ export const SubscribeDialog = ({ props }: { props: InputDialogProps }) => {
   }
 
   const subscribe = async (month: number) => {
-    const data = await fetch('http://k469emcmtlbfle9qrhpe1ppp9s.ingress.palmito.duckdns.org/subscription',{
+    const data = await fetch('https://basic-bundle-soft-wildflower-6de2.currybab.workers.dev/subscription',{
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -62,7 +62,7 @@ export const SubscribeDialog = ({ props }: { props: InputDialogProps }) => {
   };
 
   React.useEffect(() => {
-    fetch('http://k469emcmtlbfle9qrhpe1ppp9s.ingress.palmito.duckdns.org/wallet?publicKey=' + state?.publicKey)
+    fetch('https://basic-bundle-soft-wildflower-6de2.currybab.workers.dev/wallet?publicKey=' + state?.publicKey)
       .then(res => res.json()).then(c => setCredit(c));
   }, []);
 

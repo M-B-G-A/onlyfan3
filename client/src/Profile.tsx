@@ -92,7 +92,7 @@ export const Profile = () => {
         }
         getFeeds();
 
-        fetch(`http://k469emcmtlbfle9qrhpe1ppp9s.ingress.palmito.duckdns.org/subscription?subscriber=${state?.publicKey}&creator=${user?.id}`)
+        fetch(`https://basic-bundle-soft-wildflower-6de2.currybab.workers.dev/subscription?subscriber=${state?.publicKey}&creator=${user?.id}`)
             .then(res => res.json())
             .then(res => {
                 console.log(res);
