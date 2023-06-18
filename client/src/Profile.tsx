@@ -4,6 +4,8 @@ import { useAuth, usePolybase } from "@polybase/react";
 import { InputDialog } from "./InputDialog";
 import { SubscribeDialog } from "./SubscribeDialog";
 import { FeedModel } from "./Feed";
+import { List, ListItem } from '@mui/material';
+import { Content } from "./Content";
 
 export class UserModel {
     id: string;
@@ -33,7 +35,7 @@ export const Profile = () => {
     const [open, setOpen] = React.useState(false);
     const [subscribeOpen, setSubscribeOpen] = React.useState(false);
     const [subscription, setSubscription] = React.useState(0);
-    
+
     const [feeds, setFeeds] = useState<FeedModel[]>([]);
 
     const onClick = async () => {
@@ -54,6 +56,10 @@ export const Profile = () => {
         }
     };
 
+    const handleClickOpen = (id: string) => {
+
+    };
+
     React.useEffect(() => {
         if (user == null) {
             async function getUser() {
@@ -66,11 +72,13 @@ export const Profile = () => {
     });
 
     React.useEffect(() => {
-        async function getFeeds() { 
+        async function getFeeds() {
             const { data } = await db.collection("Post").get()
 
-            const feeds = data.reverse().map ( data => 
-                 new FeedModel(
+            const feeds = data.reverse().filter(data =>
+                data.data.publicKey == state?.publicKey
+            ).map(data =>
+                new FeedModel(
                     data.data.publicKey, //id
                     "", // image
                     "", // name
@@ -82,7 +90,7 @@ export const Profile = () => {
             setFeeds(feeds);
         }
         getFeeds();
-       
+
     });
 
     return (
@@ -90,14 +98,14 @@ export const Profile = () => {
             <div style={{ marginTop: "170px" }}>
                 <div style={{ marginLeft: "200px", marginBottom: "10px" }}>
                     <div style={{ color: "#6C6C6C", fontSize: "24px", float: "left", marginRight: "200px" }}>
-                        { user?.name }
+                        {user?.name}
                     </div>
                     <div style={{ color: "#6C6C6C", fontSize: "24px" }}>
-                        <button 
+                        <button
                             style={{ background: "linear-gradient(90deg, #510CF5 0%, #99FCFD 97.83%)", borderRadius: "12px", color: "white", fontSize: "16px", width: "252px", height: "55px" }}
                             onClick={onClick}
                         >
-                            { state?.publicKey != user?.id ? 
+                            {state?.publicKey != user?.id ?
                                 "Subscribe" : "UPLOAD"
                             }
                         </button>
@@ -110,12 +118,23 @@ export const Profile = () => {
                         <img src={user?.image} style={{ marginLeft: "20px", width: "160px", height: "160px", borderRadius: "80px", overflow: "hidden", backgroundColor: "#EEEEEE" }} />
                     </div>
                     <div style={{ paddingLeft: "200px", paddingRight: "40px", paddingTop: "30px" }}>
-                        { user?.status }
+                        {user?.status}
                     </div>
                 </div>
             </div>
-            <InputDialog props={{open: open, handleClose: handleClose, user: user || undefined }}  />
-            <SubscribeDialog props={{open: subscribeOpen, handleClose: handleClose, user: user || undefined }}  />
+            <List style={{
+                marginTop: "21px",
+            }}>
+                {feeds
+                    .map((data, index) => (
+                        <ListItem>
+                            <Content feed={data} handleClickOpen={handleClickOpen} />
+                        </ListItem>
+                    ))
+                }
+            </List>
+            <InputDialog props={{ open: open, handleClose: handleClose, user: user || undefined }} />
+            <SubscribeDialog props={{ open: subscribeOpen, handleClose: handleClose, user: user || undefined }} />
         </div>
     );
 };

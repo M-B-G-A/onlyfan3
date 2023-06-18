@@ -14,7 +14,7 @@ type ProfileDialogProps = {
     handleClose: () => void,
 };
 
-export const ProfileDialog = ({ props } : { props: ProfileDialogProps }) => {
+export const ProfileDialog = ({ props }: { props: ProfileDialogProps }) => {
     const { auth, state } = useAuth();
     const navigate = useNavigate();
     const db = usePolybase();
@@ -46,11 +46,11 @@ export const ProfileDialog = ({ props } : { props: ProfileDialogProps }) => {
                 }
                 getUserName();
             }
-    
+
             if (plainFiles.length && userImage == "") {
                 storeFiles([plainFiles[0]]).then((filename: string) => {
-                  setImage(filename);
-                  setUserImage(filename);
+                    setImage(filename);
+                    setUserImage(filename);
                 });
             }
         }
@@ -66,28 +66,28 @@ export const ProfileDialog = ({ props } : { props: ProfileDialogProps }) => {
         <Dialog open={props.open} onClose={props.handleClose}>
             <div style={{ width: "400px", height: "550px" }}>
                 <div style={{ position: "absolute", top: "25px", right: "25px" }}>
-                <button style={{ height: "30px", width: "30px", padding: "0px" }} onClick={props.handleClose}><img src={ Close } /></button>
+                    <button style={{ height: "30px", width: "30px", padding: "0px" }} onClick={props.handleClose}><img src={Close} /></button>
                 </div>
                 <div style={{ width: "100%", textAlign: "center", marginTop: "80px" }}>
-                    <img 
-                        style={{ width: "150px", height: "150px", borderRadius: "75px", backgroundColor: "#EEEEEE" }} 
+                    <img
+                        style={{ width: "150px", height: "150px", borderRadius: "75px", backgroundColor: "#EEEEEE" }}
                         src={userImage}
                         onClick={openFileSelector}
                     />
-                </div> 
+                </div>
                 <div style={{ width: "100%", textAlign: "center" }}>
                     <button style={{ fontSize: "24px", color: "#6C6C6C" }}>
-                        @{ userName }
+                        @{userName}
                     </button>
                 </div>
                 <div style={{ width: "100%", textAlign: "center", marginBottom: "20px" }}>
                     <button style={{ fontSize: "24px", color: "#000000" }}>
-                        { truncateMiddle(formatValue(props.userId), 20) }
+                        {truncateMiddle(formatValue(props.userId), 20)}
                     </button>
                 </div>
                 <div style={{ width: "100%", textAlign: "center", marginBottom: "20px" }}>
-                    <button 
-                        style={{ width: "300px", height: "80px", fontSize: "24px", color: "#ffffff", background: "#4294F7", borderRadius: "12px" }} 
+                    <button
+                        style={{ width: "300px", height: "80px", fontSize: "24px", color: "#ffffff", background: "#4294F7", borderRadius: "12px" }}
                         onClick={handleOpenMyPage}
                     >
                         My Page
@@ -95,17 +95,17 @@ export const ProfileDialog = ({ props } : { props: ProfileDialogProps }) => {
                 </div>
                 {
                     state?.publicKey == props.userId ? (
-                    <div style={{ width: "100%", textAlign: "center" }}>
-                        <button 
-                            style={{ fontSize: "24px", color: "#626262" }}
-                            onClick={handleLogout}
-                        >
-                            Logout
-                        </button>
-                     </div>
+                        <div style={{ width: "100%", textAlign: "center" }}>
+                            <button
+                                style={{ fontSize: "24px", color: "#626262" }}
+                                onClick={handleLogout}
+                            >
+                                Logout
+                            </button>
+                        </div>
                     ) : null
                 }
-                
+
             </div>
         </Dialog>
     );
