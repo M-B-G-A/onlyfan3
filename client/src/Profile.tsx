@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import { useAuth, usePolybase } from "@polybase/react";
 import { InputDialog } from "./InputDialog";
+import { SubscribeDialog } from "./SubscribeDialog";
 
 export class UserModel {
     id: string;
@@ -29,17 +30,25 @@ export const Profile = () => {
     const { userId } = useParams();
     const [user, setUser] = useState<UserModel | null>(null);
     const [open, setOpen] = React.useState(false);
-
+    const [subscribeOpen, setSubscribeOpen] = React.useState(false);
+    const [subscription, setSubscription] = React.useState(0);
+    
     const onClick = async () => {
         if (state?.publicKey != user?.id) {
             // subscribe
+            setSubscribeOpen(true);
         } else {
             setOpen(true);
         }
     };
 
     const handleClose = () => {
-        setOpen(false);
+        if (state?.publicKey != user?.id) {
+            // subscribe
+            setSubscribeOpen(false);
+        } else {
+            setOpen(false);
+        }
     };
 
     React.useEffect(() => {
@@ -83,6 +92,7 @@ export const Profile = () => {
                 </div>
             </div>
             <InputDialog props={{open: open, handleClose: handleClose, user: user || undefined }}  />
+            <SubscribeDialog props={{open: subscribeOpen, handleClose: handleClose, user: user || undefined }}  />
         </div>
     );
 };
