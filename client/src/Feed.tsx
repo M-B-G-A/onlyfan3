@@ -53,8 +53,8 @@ export const Feed = () => {
     React.useEffect(() => {
         async function getFeeds() { 
             const { data } = await db.collection("Post").get()
-            const feeds = data.map ( data => 
-                
+
+            const feeds = data.reverse().map ( data => 
                  new FeedModel(
                     data.data.publicKey, //id
                     "", // image
