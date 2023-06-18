@@ -33,6 +33,7 @@ export class FeedModel {
 export const Feed = () => {
 
     const [feeds, setFeeds] = useState<FeedModel[]>([]);
+    const [id, setId] = useState<string | null>(null);
     const { state } = useAuth();
     const db = usePolybase();
 
@@ -40,7 +41,8 @@ export const Feed = () => {
 
     const navigate = useNavigate();
 
-    const handleClickOpen = () => {
+    const handleClickOpen = (id: string) => {
+        setId(id)
         setOpen(true);
     };
 
@@ -78,7 +80,7 @@ export const Feed = () => {
                     ))
                 }
             </List>
-            <ProfileDialog props={{open: open, handleClose: handleClose, userId: state?.publicKey || "" }}  />
+            <ProfileDialog props={{open: open, handleClose: handleClose, userId: id || ""}}  />
         </div>
     );
 };
