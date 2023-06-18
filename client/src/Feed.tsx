@@ -6,6 +6,7 @@ import Dialog from '@mui/material/Dialog';
 import Close from './assets/close.svg'
 import { useNavigate } from "react-router-dom";
 import { ProfileDialog } from "./ProfileDialog";
+import { AuthState } from "@polybase/auth";
 
 
 export class FeedModel {
@@ -37,7 +38,7 @@ export const Feed = () => {
 
     const [feeds, setFeeds] = useState<FeedModel[]>([]);
     const [id, setId] = useState<string | null>(null);
-    const { state } = useAuth();
+    const { state, auth } = useAuth();
     const db = usePolybase();
 
     const [open, setOpen] = React.useState(false);
@@ -66,28 +67,35 @@ export const Feed = () => {
         setSubscribedIds(data.map((d: any) => d.creatorId));
     };
 
-    React.useEffect(() => {
-        async function getFeeds() {
-            const { data } = await db.collection("Post").get()
+    async function getFeeds() {
+        const { data } = await db.collection("Post").get()
 
-            const feeds = data.reverse().map ( data => 
-                 new FeedModel(
-                    data.data.publicKey, //id
-                    "", // image
-                    "", // name
-                    data.data.content,
-                    data.data.cid,
-                    data.data.publicKey == state?.publicKey || (subscribedIds || []).filter((creatorId) => creatorId === data.data.publicKey).length != 0,
-                )
-            );
-            setFeeds(feeds);
-        }
-        getFeeds();
-       
-        if (subscribedIds == null) {
+        const feeds = data.reverse().map ( data => 
+                new FeedModel(
+                data.data.publicKey, //id
+                "", // image
+                "", // name
+                data.data.content,
+                data.data.cid,
+                data.data.publicKey == state?.publicKey || (subscribedIds || []).filter((creatorId) => creatorId === data.data.publicKey).length != 0,
+            )
+        );
+        setFeeds(feeds);
+    }
+
+    React.useEffect(() => {
+    //    console.log('hi', state);
+        if (subscribedIds == null || subscribedIds.length === 0) {
             subscribe();
+        } else {
+            getFeeds();
         }
-    }, []);
+    }, [state]);
+
+    React.useEffect(() => {
+       
+        getFeeds();
+    }, [subscribedIds]);
 
     return (
         <div>

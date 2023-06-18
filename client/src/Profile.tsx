@@ -61,21 +61,23 @@ export const Profile = () => {
 
     };
 
+    async function getUser() {
+        console.log(userId)
+        const { data } = await db.collection('User').record(userId || '').get();
+        const record = data;
+        setUser(new UserModel(record.id, record.name, record.image, record.status));
+    }
+
     React.useEffect(() => {
         if (user == null) {
-            async function getUser() {
-                const { data } = await db.collection('User').where("id", "==", userId || "").get();
-                const record = data[0].data
-                setUser(new UserModel(record.id, record.name, record.image, record.status));
-            }
             getUser();
         }
         
         async function getFeeds() {
-            const { data } = await db.collection("Post").get()
+            const { data } = await db.collection("Post").get();
 
             const feeds = data.reverse().filter(data =>
-                data.data.publicKey == state?.publicKey
+                data.data.publicKey == userId
             ).map(data =>
                 new FeedModel(
                     data.data.publicKey, //id

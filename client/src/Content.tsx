@@ -4,15 +4,18 @@ import { ProfileDialog } from './ProfileDialog';
 import AppIcon from './assets/app_icon.svg'
 import { useAuth, usePolybase } from "@polybase/react";
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export const Content = ({ feed, handleClickOpen }: { feed: FeedModel, handleClickOpen: (userId: string) => void }) => {
 
   const db = usePolybase();
+  
   const [user, setUser] = useState<UserModel | null>(null);
+  const navigate = useNavigate();
 
   const goToProfile = () => {
     if(user && user.id) {
-      location.href=`/profile/${user.id}`;
+      navigate(`/profile/${user.id}`);
     }
   }
 
@@ -33,7 +36,7 @@ export const Content = ({ feed, handleClickOpen }: { feed: FeedModel, handleClic
     <div style={{ backgroundColor: "white", width: "800px", borderRadius: "20px", boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.11)" }}>
       <div style={{ padding: "30px" }}>
         <div style={{ float: "left", marginRight: "18px", height: "140px" }}>
-          <img src={user?.image} style={{ width: "80px", height: "80px", borderRadius: "40px", overflow: "hidden", backgroundColor: "#EEEEEE" }} onClick={() => handleClickOpen(feed.id || "")} />
+          <img src={user?.image} style={{ width: "80px", height: "80px", borderRadius: "40px", overflow: "hidden", backgroundColor: "#EEEEEE" }} onClick={() => handleClickOpen(user?.id || "")} />
         </div>
         <div style={{ color: "#6C6C6C", fontSize: "14px" }}>@{user?.name}</div>
         <div style={{ color: "#000000", fontSize: "18px" }}>

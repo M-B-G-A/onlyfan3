@@ -4,7 +4,7 @@ import { truncateMiddle, formatValue } from "./Utils";
 import { PolybaseProvider, AuthProvider, useAuth, usePolybase, useIsAuthenticated } from "@polybase/react";
 import { atom, useAtom } from "jotai";
 import { AuthState } from '@polybase/auth';
-import { Link, Navigation } from 'react-router-dom';
+import { Link, Navigation, useNavigate } from 'react-router-dom';
 import { ProfileDialog } from './ProfileDialog';
 import React, { useState } from "react";
 
@@ -35,6 +35,7 @@ const Header = () => {
 
 export const Header = () => {
 
+    const navigate = useNavigate();
     const { auth, state } = useAuth();
     const db = usePolybase();
     const [open, setOpen] = useState(false);
@@ -100,7 +101,7 @@ export const Header = () => {
                     flexDirection: "row",
                     alignItems: "center"
                 }}
-                onClick={() => {location.href = '/feed';}}
+                onClick={() => {navigate('/feed');}}
                 >
                     <img src={AppIcon} style={{ height: "45px", width: "200px" }}  />
                 </div>

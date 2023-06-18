@@ -36,23 +36,26 @@ export const ProfileDialog = ({ props }: { props: ProfileDialogProps }) => {
         props.handleClose();
     };
 
-    React.useEffect(() => {
-        if (props.open == true) {
-            if (userName == "") {
-                async function getUserName() {
-                    const { data } = await db.collection('User').where("id", "==", props.userId).get();
-                    setUserName(data[0].data.name);
-                    setUserImage(data[0].data.image);
-                }
-                getUserName();
-            }
+    async function getUserName() {
+        const { data } = await db.collection('User').where("id", "==", props.userId).get();
+        setUserName(data[0].data.name);
+        setUserImage(data[0].data.image);
+    }
 
-            if (plainFiles.length && userImage == "") {
-                storeFiles([plainFiles[0]]).then((filename: string) => {
-                    setImage(filename);
-                    setUserImage(filename);
-                });
-            }
+    React.useEffect(() => {
+        // if (props.open == true) {
+            // if (userName == "") {
+                getUserName();
+            // }
+        // }
+    }, [props.userId]);
+
+    React.useEffect(() => {
+        if (plainFiles.length && userImage == "") {
+            storeFiles([plainFiles[0]]).then((filename: string) => {
+                setImage(filename);
+                setUserImage(filename);
+            });
         }
     }, [plainFiles]);
 
@@ -90,7 +93,7 @@ export const ProfileDialog = ({ props }: { props: ProfileDialogProps }) => {
                         style={{ width: "300px", height: "80px", fontSize: "24px", color: "#ffffff", background: "#4294F7", borderRadius: "12px" }}
                         onClick={handleOpenMyPage}
                     >
-                        My Page
+                      Go Page
                     </button>
                 </div>
                 {
