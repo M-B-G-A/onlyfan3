@@ -85,7 +85,7 @@ const Content = () => {
 
 export const App = () => {
   const db = new Polybase({
-    defaultNamespace: "pk/0x3f2d19f61dfe0a5bb4eb4f0fe4342bd1a3530797afa6c1a69c9a2e7e3eb7b196b9ac814e817f97bf25967992db8a468273a744e699dcf72d40e3bd7ab29c48c1/onlyfan3",
+    defaultNamespace: "pk/0xb01611ad184429dfd624954a3ef60a87afaac44a575f70370f20dfb26aedc837cf3f1ce3977e4ab2b0d47a11ae774fff78f168d106994060b2e6247cc0fd60d2/onlyfan3",
   });
 
   const auth = new Auth();
