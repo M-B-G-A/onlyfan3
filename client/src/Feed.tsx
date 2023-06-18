@@ -14,6 +14,7 @@ export class FeedModel {
     name: string;
     content: string;
     image: string;
+    visible: boolean;
 
     constructor(
         id: string,
@@ -21,12 +22,14 @@ export class FeedModel {
         name: string,
         content: string,
         image: string,
+        visible: boolean,
     ) {
         this.id = id;
         this.profileImage = profileImage;
         this.name = name
         this.content = content;
         this.image = image
+        this.visible = visible
     }
 }
 
@@ -38,6 +41,7 @@ export const Feed = () => {
     const db = usePolybase();
 
     const [open, setOpen] = React.useState(false);
+    const [subscribedIds, setSubscribedIds] = React.useState(null);
 
     const navigate = useNavigate();
 
@@ -50,8 +54,20 @@ export const Feed = () => {
         setOpen(false);
     };
 
+    const subscribe = async () => {
+        const data = await fetch('http://localhost:3000/subscription?subscriber=' + state?.publicKey, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            }
+        }).then((response) => response.json());
+
+        console.log(data);
+        setSubscribedIds(data.map((d: any) => d.creatorId));
+    };
+
     React.useEffect(() => {
-        async function getFeeds() { 
+        async function getFeeds() {
             const { data } = await db.collection("Post").get()
 
             const feeds = data.reverse().map ( data => 
@@ -60,12 +76,17 @@ export const Feed = () => {
                     "", // image
                     "", // name
                     data.data.content,
-                    data.data.cid
+                    data.data.cid,
+                    data.data.publicKey == state?.publicKey || (subscribedIds || []).filter((creatorId) => creatorId === data.data.publicKey).length != 0,
                 )
             );
             setFeeds(feeds);
         }
         getFeeds();
+       
+        if (subscribedIds == null) {
+            subscribe();
+        }
     });
 
     return (

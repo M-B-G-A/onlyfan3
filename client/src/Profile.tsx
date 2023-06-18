@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { useAuth, usePolybase } from "@polybase/react";
 import { InputDialog } from "./InputDialog";
 import { SubscribeDialog } from "./SubscribeDialog";
+import { FeedModel } from "./Feed";
 
 export class UserModel {
     id: string;
@@ -33,6 +34,8 @@ export const Profile = () => {
     const [subscribeOpen, setSubscribeOpen] = React.useState(false);
     const [subscription, setSubscription] = React.useState(0);
     
+    const [feeds, setFeeds] = useState<FeedModel[]>([]);
+
     const onClick = async () => {
         if (state?.publicKey != user?.id) {
             // subscribe
@@ -60,6 +63,26 @@ export const Profile = () => {
             }
             getUser();
         }
+    });
+
+    React.useEffect(() => {
+        async function getFeeds() { 
+            const { data } = await db.collection("Post").get()
+
+            const feeds = data.reverse().map ( data => 
+                 new FeedModel(
+                    data.data.publicKey, //id
+                    "", // image
+                    "", // name
+                    data.data.content,
+                    data.data.cid,
+                    true,
+                )
+            );
+            setFeeds(feeds);
+        }
+        getFeeds();
+       
     });
 
     return (
