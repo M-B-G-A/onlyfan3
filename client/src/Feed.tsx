@@ -54,10 +54,11 @@ export const Feed = () => {
         async function getFeeds() { 
             const { data } = await db.collection("Post").get()
             const feeds = data.map ( data => 
+                
                  new FeedModel(
                     data.data.publicKey, //id
-                    data.data.publicKey, // image
-                    'ss', // name
+                    "", // image
+                    "", // name
                     data.data.content,
                     data.data.cid
                 )
