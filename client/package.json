@@ -17,10 +17,14 @@
     "@polybase/client": "^0.6.2",
     "@polybase/eth": "^0.6.2",
     "@polybase/react": "^0.6.2",
+    "dotenv": "^16.3.1",
     "jotai": "^2.2.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "ulid": "^2.3.0"
+    "react-router-dom": "^6.13.0",
+    "ulid": "^2.3.0",
+    "use-file-picker": "^1.7.0",
+    "web3.storage": "^4.5.4"
   },
   "devDependencies": {
     "@types/react": "^18.0.37",

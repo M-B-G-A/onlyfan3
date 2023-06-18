@@ -1,8 +1,12 @@
 import { AppBar, Toolbar } from '@mui/material';
 import AppIcon from './assets/app_icon.svg'
 import { truncateMiddle, formatValue } from "./Utils";
-import { PolybaseProvider, AuthProvider, useAuth, usePolybase } from "@polybase/react";
+import { PolybaseProvider, AuthProvider, useAuth, usePolybase, useIsAuthenticated } from "@polybase/react";
 import { atom, useAtom } from "jotai";
+import { AuthState } from '@polybase/auth';
+import { Link, Navigation } from 'react-router-dom';
+import { ProfileDialog } from './ProfileDialog';
+import React, { useState } from "react";
 
 /*
 // 기존 코드
@@ -31,7 +35,9 @@ const Header = () => {
 
 export const Header = () => {
 
-    const { auth, state, loading } = useAuth();
+    const { auth, state } = useAuth();
+    const db = usePolybase();
+    const [open, setOpen] = useState(false);
 
     const onClickMy = () => {
       console.log('onClickMy');
@@ -41,15 +47,40 @@ export const Header = () => {
       console.log('onClickFeed');
     };
 
-    const onClickWallet = () => {
-      if (state != null) {
-        auth.signOut();
+    const onClickWallet = async () => {
+      if (state == null) {
+        await signIn();
       } else {
-        auth.signIn();
+        handleClickOpen();
       }
     };
 
+    const signIn = async () => {
+      const state = await auth.signIn();
+      if (state?.publicKey != null) {
+        const record = await db.collection('User').where("id", "==", state?.publicKey).get();
+        console.log(record);
+        if (record.data.length == 0) {
+          const recordData = await db.collection('User').create([
+            Math.random().toString(36).substring(2,11), 
+            'image',
+            'hello! Pans',
+          ]);
+          console.log(recordData);
+        }
+       }
+    }
+
+  const handleClickOpen = () => {
+      setOpen(true);
+  };
+
+  const handleClose = () => {
+      setOpen(false);
+  };
+
     return (
+       <div>
         <AppBar
             position="static"
             elevation={0}
@@ -77,14 +108,14 @@ export const Header = () => {
                       onClickMy();
                     }}
                   >
-                    MY
+                   <Link to="/feed">FEED</Link> 
                   </button>
                   <button
                     onClick={() => {
                       onClickFeed();
                     }}
                   >
-                    FEED
+                    <Link to="/library">LIBRARY</Link> 
                   </button>
                   <button
                     onClick={() => {
@@ -96,5 +127,7 @@ export const Header = () => {
                 </div>
             </Toolbar>
         </AppBar>
+        <ProfileDialog props={{open: open, handleClose: handleClose, userId: state?.publicKey || "" }}  />
+       </div>
     );
 };

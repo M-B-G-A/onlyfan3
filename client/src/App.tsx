@@ -6,7 +6,12 @@ import * as eth from "@polybase/eth";
 import { atom, useAtom } from "jotai";
 import { ulid } from 'ulid';
 import { Header } from "./Header"
+import { Feed } from "./Feed"
+import { Library } from "./Library"
+import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom"
+import { Profile } from "./Profile";
 
+/*
 const Content = () => {
   const { state } = useAuth();
   const db = usePolybase();
@@ -76,17 +81,29 @@ const Content = () => {
     </div>
   </>;
 };
+*/
 
 export const App = () => {
   const db = new Polybase({
     defaultNamespace: "pk/0x3f2d19f61dfe0a5bb4eb4f0fe4342bd1a3530797afa6c1a69c9a2e7e3eb7b196b9ac814e817f97bf25967992db8a468273a744e699dcf72d40e3bd7ab29c48c1/onlyfan3",
   });
+
   const auth = new Auth();
+
   return (
     <PolybaseProvider polybase={db}>
       <AuthProvider auth={auth} polybase={db}>
-        <Header />
-        <Content />
+          <BrowserRouter>
+          <Header />
+        <div style={{  width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', }}>
+          <Routes>
+            <Route path="/feed/*" element={ <Feed /> } />
+            <Route path="/library/*" element={ <Library /> } />
+            <Route path="/profile/:userId" element={ <Profile /> } />
+            <Route path="/" element={ <Navigate replace to ="/feed" /> } />
+          </Routes>
+          </div>
+          </BrowserRouter>
       </AuthProvider>
     </PolybaseProvider>
   );
