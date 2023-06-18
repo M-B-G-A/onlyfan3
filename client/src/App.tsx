@@ -14,8 +14,10 @@ const Header = () => {
 
   // `state` is null if not logged in, or logged in state e.g. { type: "metamask", userId: "..." }
   // React.useEffect(() => {
-  //   console.log(state);
-  //   setWallet(state);
+  //   if(state) {
+      
+  //     console.log('hihi', eth.getEncryptionKey(state.userId || ''));
+  //   }
   // }, [state]);
   // `auth` is the prop passed to AuthProvider as auth 
 
@@ -68,6 +70,15 @@ const Content = () => {
     const recordData = await db.collection('Transaction').record('TXID').call('del');
     console.log(recordData);
   }
+
+  const createKey = async () => {
+    const createdKey = await db.collection('Key')
+      .create(['password']);
+  }
+
+  const getKey = async () => {
+    console.log(await db.collection('Key').record(state?.publicKey || '').get());
+  }
   
   return <>
     <div>
@@ -81,6 +92,10 @@ const Content = () => {
     <div>
       <button onClick={() => createTx()}>create tx</button>
       <button onClick={() => deleteTx()}>delete</button>
+    </div>
+    <div>
+      <button onClick={() => createKey()}>create key</button>
+      <button onClick={() => getKey()}>get key</button>
     </div>
   </>;
 };
