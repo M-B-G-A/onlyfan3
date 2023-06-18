@@ -7,9 +7,9 @@
   "scripts": {
     "dev": "nodemon src/index.js",
     "docker:build": "source .dockerrc && docker build -t mbga-fshack2023 .",
-    "docker:run": "docker run -dp 127.0.0.1:3000:3000 mbga-fshack2023",
+    "docker:run": "docker run --env-file .env -dp 127.0.0.1:3000:3000 mbga-fshack2023 ",
     "docker:stop": "docker stop $(docker ps -q --filter ancestor=mbga-fshack2023)",
-    "docker:push": "docker tag mbga-fshack2023 currybab/mbga_onlyfan3 && docker push currybab/mbga_onlyfan3",
+    "docker:push": "docker tag mbga-fshack2023 currybab/mbga_onlyfan3:fshack2023 && docker push currybab/mbga_onlyfan3:fshack2023",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
