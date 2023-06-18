@@ -40,7 +40,13 @@ export const Content = ({ feed, handleClickOpen }: { feed: FeedModel, handleClic
                 This Photo was published on March 25, 2023. <br />
                 Want to own your posts?
                 <div style={{ width: "100%", marginTop: "100px" }}>
-                  <button style={{ background: "linear-gradient(90deg, #510CF5 0%, #99FCFD 97.83%)", borderRadius: "12px", color: "white", fontSize: "16px", width: "252px", height: "55px" }}>
+                  <button style={{ background: "linear-gradient(90deg, #510CF5 0%, #99FCFD 97.83%)", borderRadius: "12px", color: "white", fontSize: "16px", width: "252px", height: "55px" }} onClick={() => {
+                      console.log('hi');
+                      if(user?.id) {
+                        location.href=`/profile/${user?.id}`;
+                      }
+                    }
+                  }>
                     Subscribe
                   </button>
                 </div>
