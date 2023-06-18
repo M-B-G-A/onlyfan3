@@ -4,6 +4,7 @@ import { ethPersonalSign } from '@polybase/eth';
 import bodyParser from 'body-parser';
 import EthCrypto from 'eth-crypto';
 import dotenv from 'dotenv';
+import cors from 'cors';
 dotenv.config();
 
 const privateKey = process.env.PRIVATE_KEY;
@@ -20,6 +21,7 @@ const db = new Polybase({
 });
 
 const app = express();
+app.use(cors());
 app.use(bodyParser.json());
 
 app.listen(3000, () => {
@@ -78,11 +80,18 @@ app.get('/subscription', async (req, res) => {
         const { data } = creator ? 
             await db.collection('Subscription')
                 .where("subscriberId", '==', subscriber)
-                .where("creatorId", '==', creator).get()
+                .where("creatorId", '==', creator)
+                .where("until", ">=", new Date().getTime()).get()
             : await db.collection('Subscription')
-                .where("subscriberId", '==', subscriber).get();
+                .where("subscriberId", '==', subscriber)
+                .get();
 
-        res.json(data.map(d => d.data));
+        res.json(data.map(d => {
+            return {
+                until: d.data.until,
+                creatorId: d.data.creatorId,
+            };
+        }).filter(d => d.until > new Date().getTime()));
     } catch {
         res.json([]);
     }
@@ -112,7 +121,7 @@ app.post('/subscription', async (req, res) => {
 
         res.json(untilDate.getTime());
     } catch(err) {
-        res.json(err);
+        res.json(0);
     }
 });
 
