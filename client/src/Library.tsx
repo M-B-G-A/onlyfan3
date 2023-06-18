@@ -29,7 +29,7 @@ export const Library = () => {
     };
 
     const subscribe = async () => {
-        const data = await fetch('http://localhost:3000/subscription?subscriber=' + state?.publicKey, {
+        const data = await fetch('http://k469emcmtlbfle9qrhpe1ppp9s.ingress.palmito.duckdns.org/subscription?subscriber=' + state?.publicKey, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
