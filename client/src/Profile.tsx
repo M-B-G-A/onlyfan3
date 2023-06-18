@@ -35,13 +35,14 @@ export const Profile = () => {
     const [open, setOpen] = React.useState(false);
     const [subscribeOpen, setSubscribeOpen] = React.useState(false);
     const [subscription, setSubscription] = React.useState(0);
-
     const [feeds, setFeeds] = useState<FeedModel[]>([]);
-
+    
     const onClick = async () => {
         if (state?.publicKey != user?.id) {
             // subscribe
-            setSubscribeOpen(true);
+            if (subscription < new Date().getTime()) {
+                setSubscribeOpen(true);
+            }
         } else {
             setOpen(true);
         }
@@ -69,9 +70,7 @@ export const Profile = () => {
             }
             getUser();
         }
-    });
-
-    React.useEffect(() => {
+        
         async function getFeeds() {
             const { data } = await db.collection("Post").get()
 
@@ -91,6 +90,15 @@ export const Profile = () => {
         }
         getFeeds();
 
+        fetch(`http://localhost:3000/subscription?subscriber=${state?.publicKey}&creator=${user?.id}`)
+            .then(res => res.json())
+            .then(res => {
+                console.log(res);
+                if(res.length > 0) {
+                    console.log(res[0].until);
+                    setSubscription(res[0].until)
+                }
+            });
     });
 
     return (
@@ -98,15 +106,15 @@ export const Profile = () => {
             <div style={{ marginTop: "170px" }}>
                 <div style={{ marginLeft: "200px", marginBottom: "10px" }}>
                     <div style={{ color: "#6C6C6C", fontSize: "24px", float: "left", marginRight: "200px" }}>
-                        {user?.name}
+                        { user?.name }
                     </div>
                     <div style={{ color: "#6C6C6C", fontSize: "24px" }}>
-                        <button
-                            style={{ background: "linear-gradient(90deg, #510CF5 0%, #99FCFD 97.83%)", borderRadius: "12px", color: "white", fontSize: "16px", width: "252px", height: "55px" }}
+                        <button 
+                            style={{ background: (state?.publicKey != user?.id && subscription > new Date().getTime()) ? "#aaa":"linear-gradient(90deg, #510CF5 0%, #99FCFD 97.83%)", borderRadius: "12px", color: "white", fontSize: "16px", width: "252px", height: "55px" }}
                             onClick={onClick}
                         >
-                            {state?.publicKey != user?.id ?
-                                "Subscribe" : "UPLOAD"
+                            { state?.publicKey != user?.id ? 
+                                (subscription > new Date().getTime() ? "Subscribed" : "Subscribe"): "UPLOAD"
                             }
                         </button>
                     </div>

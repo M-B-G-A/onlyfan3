@@ -127,7 +127,7 @@ collection Subscription {
   id: string;
   subscriberId: string;
   creatorId: string;
-  until: timestamp;
+  until: number;
   @read
   adminKey: PublicKey;
 

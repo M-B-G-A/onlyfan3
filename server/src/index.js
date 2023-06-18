@@ -8,10 +8,10 @@ import cors from 'cors';
 dotenv.config();
 
 const privateKey = process.env.PRIVATE_KEY;
-// const publicKey = process.env.PUBLIC_KEY;
+const namespace = process.env.NAMESPACE;
 
 const db = new Polybase({
-    defaultNamespace: "pk/0x3f2d19f61dfe0a5bb4eb4f0fe4342bd1a3530797afa6c1a69c9a2e7e3eb7b196b9ac814e817f97bf25967992db8a468273a744e699dcf72d40e3bd7ab29c48c1/onlyfan3",
+    defaultNamespace: namespace,
     signer: (data) => {
         return {
             h: 'eth-personal-sign',
@@ -80,8 +80,7 @@ app.get('/subscription', async (req, res) => {
         const { data } = creator ? 
             await db.collection('Subscription')
                 .where("subscriberId", '==', subscriber)
-                .where("creatorId", '==', creator)
-                .where("until", ">=", new Date().getTime()).get()
+                .where("creatorId", '==', creator).get()
             : await db.collection('Subscription')
                 .where("subscriberId", '==', subscriber)
                 .get();
