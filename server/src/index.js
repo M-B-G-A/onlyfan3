@@ -80,8 +80,7 @@ app.get('/subscription', async (req, res) => {
         const { data } = creator ? 
             await db.collection('Subscription')
                 .where("subscriberId", '==', subscriber)
-                .where("creatorId", '==', creator)
-                .where("until", ">=", new Date().getTime()).get()
+                .where("creatorId", '==', creator).get()
             : await db.collection('Subscription')
                 .where("subscriberId", '==', subscriber)
                 .get();
