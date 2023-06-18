@@ -2,59 +2,67 @@
 collection User {
   // `id` is unique and required on all collections
   id: string;
-  publicKey: PublicKey;
-  name: string; 
+  name: string;
+  image?: string;
   status?: string;
 
   // `constructor` is called when a new record is
   // created, make sure to assign a value to `this.id`
-  constructor (id: string, name: string, status?: string) {
+  constructor (name: string, image?: string, status?: string) {
     // `this.id` must be assigned in the constructor
     // `this.id` must be unique in collection
-    this.id = id;
+    this.id = ctx.publicKey.toHex();
     this.name = name;
-    this.publicKey = ctx.publicKey;
+    this.image = image;
     this.status = status;
+    this.publicKey = ctx.publicKey;
   }
 
   del () {
-    if (this.publicKey != ctx.publicKey) {
+    if (this.id != ctx.publicKey.toHex()) {
       throw error();
     }
     selfdestruct();
   }
 
   function setName (name: string) {
-    if (ctx.publicKey != this.publicKey) {
+    if (ctx.publicKey.toHex() != this.id) {
       error('You are not the creator of this record.');
     }
     this.name = name;
   }
   
+  function setImage (image: string) {
+    if (ctx.publicKey.toHex() != this.id) {
+      error('You are not the creator of this record.');
+    }
+    this.image = image;
+  }
+  
   function setStatus (name: string) {
-    if (ctx.publicKey != this.publicKey) {
+    if (ctx.publicKey.toHex() != this.id) {
       error('You are not the creator of this record.');
     }
     this.name = name;
   }
 }
 
-
 @public 
 collection Post {
   id: string;
-  price: number;
-  cid: string;
+  cid: string; // FILECOIN FILE CONTENT ID
   content: string;
   timestamp: number;
-  publicKey: PublicKey;
+  publicKey: string;
 
   @index(publicKey, [timestamp, desc]);
   
   constructor (id: string, cid: string, content: string, timestamp: number) {
     this.id = id;
+    this.cid = cid;
     this.content = content;
-    this.publicKey = ctx.publicKey;
+    this.timestamp = timestamp;
+    this.publicKey = ctx.publicKey.toHex();
   }
 
   del () {
@@ -65,36 +73,79 @@ collection Post {
   }
 
   updateContent(content: string, timestamp: number) {
-    if (this.publicKey != ctx.publicKey) {
+    if (this.publicKey != ctx.publicKey.toHex()) {
       throw error();
     }
     this.content = content;
     this.timestamp = timestamp;
   }
-
-  updatePrice(price: number) {
-    if (this.publicKey != ctx.publicKey) {
-      throw error();
-    }
-    this.price = price;
-  } 
 }
 
 @public
-collection Transaction {
-  id: string;
-  publicKey: PublicKey;
-  status: string;
+collection PostKey {
+  id: string; // post id
+  password: string;
+  @read
+  adminKey: PublicKey;
 
-  constructor (id: string) {
-    this.id = id;
-    this.publicKey = ctx.publicKey;
+  constructor(postId: string, password: string) {
+    this.id = postId;
+    this.password = password;
+    this.adminKey = {
+      alg: "ES256K",
+      crv: "secp256k1",
+      kty: "EC",
+      use: "sig",
+      x: "sBYRrRhEKd_WJJVKPvYKh6-qxEpXX3A3DyDfsmrtyDc=",
+      y: "zz8c45d-SrKw1HoRrndP_3jxaNEGmUBgsuYkfMD9YNI="
+    };
   }
+}
 
-  del () {
-    if (this.publicKey != ctx.publicKey) {
+collection Wallet {
+  id: string; // 
+  credit: number;
+  @read
+  adminKey: PublicKey;
+  
+  constructor(publicKey: string, credit: number) {
+    if (ctx.publicKey.toHex() != "0xb01611ad184429dfd624954a3ef60a87afaac44a575f70370f20dfb26aedc837cf3f1ce3977e4ab2b0d47a11ae774fff78f168d106994060b2e6247cc0fd60d2") {
       throw error();
     }
-    selfdestruct();
+    this.adminKey = ctx.publicKey;
+    this.id = publicKey;
+    this.credit = credit;
+  }
+
+  @call(adminKey)
+  update (credit: number) {
+    this.credit = this.credit + credit;
+  }
+}
+
+collection Subscription {
+  id: string;
+  subscriberId: string;
+  creatorId: string;
+  until: timestamp;
+  @read
+  adminKey: PublicKey;
+
+  @index(subscriberId, creatorId);
+
+  constructor(subscriberId: string, creatorId: string, until: number) {
+    if (ctx.publicKey.toHex() != "0xb01611ad184429dfd624954a3ef60a87afaac44a575f70370f20dfb26aedc837cf3f1ce3977e4ab2b0d47a11ae774fff78f168d106994060b2e6247cc0fd60d2") {
+      throw error();
+    }
+    this.id = subscriberId + '_' + creatorId;
+    this.subscriberId = subscriberId;
+    this.creatorId = creatorId;
+    this.until = until;
+    this.adminKey = ctx.publicKey;
+  }
+
+  @call(adminKey)
+  update(until: number) {
+    this.until = until;
   }
 }
