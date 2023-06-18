@@ -11,21 +11,23 @@ export const Content = ({ feed, handleClickOpen }: { feed: FeedModel, handleClic
   const [user, setUser] = useState<UserModel | null>(null);
 
   const goToProfile = () => {
-    if(user?.id) {
+    if(user && user.id) {
       location.href=`/profile/${user.id}`;
     }
   }
 
+
+  async function getUser() {
+    const { data } = await db.collection('User').where("id", "==", feed.id || "").get();
+    const record = data[0].data
+    setUser(new UserModel(record.id, record.name, record.image, record.status));
+  }
+
   React.useEffect(() => {
     if (user == null) {
-      async function getUser() {
-        const { data } = await db.collection('User').where("id", "==", feed.id || "").get();
-        const record = data[0].data
-        setUser(new UserModel(record.id, record.name, record.image, record.status));
-      }
       getUser();
     }
-  });
+  }, []);
 
   return (
     <div style={{ backgroundColor: "white", width: "800px", borderRadius: "20px", boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.11)" }}>

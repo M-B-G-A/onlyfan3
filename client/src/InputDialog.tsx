@@ -55,7 +55,7 @@ export const InputDialog = ({ props }: { props: InputDialogProps }) => {
         });
       }
     }
-  });
+  }, [plainFiles]);
 
   return (
     <div>

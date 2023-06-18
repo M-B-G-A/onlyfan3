@@ -87,7 +87,7 @@ export const Feed = () => {
         if (subscribedIds == null) {
             subscribe();
         }
-    });
+    }, []);
 
     return (
         <div>

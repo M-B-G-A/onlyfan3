@@ -54,7 +54,7 @@ export const ProfileDialog = ({ props }: { props: ProfileDialogProps }) => {
                 });
             }
         }
-    });
+    }, [plainFiles]);
 
     const setImage = async (filename: string) => {
         const recordData = await db.collection('User')

@@ -62,7 +62,7 @@ export const Library = () => {
         if (subscribedIds == null) {
             subscribe();
         }
-    });
+    }, []);
 
     return (
         <div>

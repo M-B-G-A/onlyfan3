@@ -99,7 +99,7 @@ export const Profile = () => {
                     setSubscription(res[0].until)
                 }
             });
-    });
+    }, []);
 
     return (
         <div>

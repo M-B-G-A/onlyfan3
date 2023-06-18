@@ -99,8 +99,10 @@ export const Header = () => {
                     height: "100px",
                     flexDirection: "row",
                     alignItems: "center"
-                }}>
-                    <img src={AppIcon} style={{ height: "45px", width: "200px" }} />
+                }}
+                onClick={() => {location.href = '/feed';}}
+                >
+                    <img src={AppIcon} style={{ height: "45px", width: "200px" }}  />
                 </div>
                 <div>
                   <button
