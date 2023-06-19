@@ -68,40 +68,46 @@ export const Profile = () => {
         setUser(new UserModel(record.id, record.name, record.image, record.status));
     }
 
-    React.useEffect(() => {
-        if (user == null) {
-            getUser();
-        }
         
-        async function getFeeds() {
-            const { data } = await db.collection("Post").get();
+    async function getFeeds(visible: boolean) {
+        const { data } = await db.collection("Post").get();
 
-            const feeds = data.reverse().filter(data =>
-                data.data.publicKey == userId
-            ).map(data =>
-                new FeedModel(
-                    data.data.publicKey, //id
-                    "", // image
-                    "", // name
-                    data.data.content,
-                    data.data.cid,
-                    true,
-                )
-            );
-            setFeeds(feeds);
-        }
-        getFeeds();
+        const feeds = data.reverse().filter(data =>
+            data.data.publicKey == userId
+        ).map(data =>
+            new FeedModel(
+                data.data.publicKey, //id
+                "", // image
+                "", // name
+                data.data.content,
+                data.data.cid,
+                visible,
+            )
+        );
+        setFeeds(feeds);
+    }
 
-        fetch(`https://basic-bundle-soft-wildflower-6de2.currybab.workers.dev/subscription?subscriber=${state?.publicKey}&creator=${user?.id}`)
-            .then(res => res.json())
-            .then(res => {
-                console.log(res);
-                if(res.length > 0) {
-                    console.log(res[0].until);
-                    setSubscription(res[0].until)
-                }
-            });
+    React.useEffect(() => {
+        getUser();
     }, []);
+    
+    React.useEffect(() => {
+        if(state?.publicKey && user) {
+            fetch(`https://basic-bundle-soft-wildflower-6de2.currybab.workers.dev/subscription?subscriber=${state?.publicKey}&creator=${user?.id}`)
+                .then(res => res.json())
+                .then(res => {
+                    console.log(res);
+                    if(res.length > 0) {
+                        console.log(res[0].until);
+                        setSubscription(res[0].until);
+                    }
+
+                    getFeeds(userId === state?.publicKey || res.length > 0);
+                });
+        } else {
+            getFeeds(false);
+        }
+    }, [state, user]);
 
     return (
         <div>

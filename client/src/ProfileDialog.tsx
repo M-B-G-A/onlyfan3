@@ -45,7 +45,9 @@ export const ProfileDialog = ({ props }: { props: ProfileDialogProps }) => {
     React.useEffect(() => {
         // if (props.open == true) {
             // if (userName == "") {
-                getUserName();
+                if(props.userId) {
+                    getUserName();
+                }
             // }
         // }
     }, [props.userId]);

@@ -85,17 +85,17 @@ export const Feed = () => {
 
     React.useEffect(() => {
     //    console.log('hi', state);
-        if (subscribedIds == null || (subscribedIds as any[]).length === 0) {
+        if (state && ((subscribedIds || []) as any[]).length === 0) {
             subscribe();
         } else {
             getFeeds();
         }
-    }, [state]);
+    }, [state, subscribedIds]);
 
-    React.useEffect(() => {
+    // React.useEffect(() => {
        
-        getFeeds();
-    }, [subscribedIds]);
+    //     getFeeds();
+    // }, [subscribedIds]);
 
     return (
         <div>
