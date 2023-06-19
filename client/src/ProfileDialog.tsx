@@ -26,9 +26,10 @@ export const ProfileDialog = ({ props }: { props: ProfileDialogProps }) => {
     });
 
     const handleLogout = () => {
-        auth.signOut();
-        navigate("/");
-        props.handleClose();
+        auth.signOut().then(() => {
+            props.handleClose();
+            navigate("/");
+        });
     };
 
     const handleOpenMyPage = () => {
