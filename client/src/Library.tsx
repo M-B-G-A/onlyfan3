@@ -52,7 +52,8 @@ export const Library = () => {
                     '', // name
                     data.data.content,
                     data.data.cid,
-                    true
+                    true,
+                    data.data.timestamp
                 )
             );
             setFeeds(feeds);

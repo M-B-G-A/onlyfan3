@@ -16,6 +16,7 @@ export class FeedModel {
     content: string;
     image: string;
     visible: boolean;
+    timestamp: number;
 
     constructor(
         id: string,
@@ -24,6 +25,7 @@ export class FeedModel {
         content: string,
         image: string,
         visible: boolean,
+        timestamp: number,
     ) {
         this.id = id;
         this.profileImage = profileImage;
@@ -31,6 +33,7 @@ export class FeedModel {
         this.content = content;
         this.image = image
         this.visible = visible
+        this.timestamp = timestamp
     }
 }
 
@@ -78,6 +81,7 @@ export const Feed = () => {
                 data.data.content,
                 data.data.cid,
                 data.data.publicKey == state?.publicKey || (subscribedIds || []).filter((creatorId) => creatorId === data.data.publicKey).length != 0,
+                data.data.timestamp
             )
         );
         setFeeds(feeds);

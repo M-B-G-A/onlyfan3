@@ -82,6 +82,7 @@ export const Profile = () => {
                 data.data.content,
                 data.data.cid,
                 visible,
+                data.data.timestamp
             )
         );
         setFeeds(feeds);
@@ -90,7 +91,7 @@ export const Profile = () => {
     React.useEffect(() => {
         getUser();
     }, []);
-    
+
     React.useEffect(() => {
         if(state?.publicKey && user) {
             fetch(`https://basic-bundle-soft-wildflower-6de2.currybab.workers.dev/subscription?subscriber=${state?.publicKey}&creator=${user?.id}`)
@@ -122,7 +123,7 @@ export const Profile = () => {
                             onClick={onClick}
                         >
                             { state?.publicKey != user?.id ? 
-                                (subscription > new Date().getTime() ? "Subscribed" : "Subscribe"): "UPLOAD"
+                                (subscription > new Date().getTime() ? `${Math.round((new Date(subscription).getTime() - new Date().getTime()) / 24 / 3600000)} days left` : "Subscribe"): "UPLOAD"
                             }
                         </button>
                     </div>
